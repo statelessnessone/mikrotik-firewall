@@ -5,7 +5,7 @@
 # BACKUP CONFIGURATION
 # =======================
 :log info "Creating configuration backup..."
-/export compact file=safe-cycling-backup-$([/system clock get date])
+/export compact file="safe-cycling-backup-$([:pick [/system clock get date] 7 11])-$([:pick [/system clock get date] 0 3])-$([:pick [/system clock get date] 4 6])"
 
 # =======================
 # SHOW CURRENT STATUS
