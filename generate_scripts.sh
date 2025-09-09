@@ -74,7 +74,7 @@ get_dns_servers() {
     
     if [[ -f "$DNS_SERVERS_FILE" && -s "$DNS_SERVERS_FILE" ]]; then
         # Read DNS servers, skip comments and empty lines, join with commas
-        dns_list=$(grep -v '^\s*#' "$DNS_SERVERS_FILE" | grep -v '^\s*$' | tr '\n' ',' | sed 's/,$//')
+        dns_list=$(grep -v '^[[:space:]]*#' "$DNS_SERVERS_FILE" | grep -v '^\s*$' | tr '\n' ',' | sed 's/,$//')
     fi
     
     # Fallback to default DNS servers if file is empty or missing
