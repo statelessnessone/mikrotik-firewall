@@ -1,0 +1,20 @@
+# Generated RouterOS script files (should not be in repository)
+output/
+*.rsc
+
+# Log files from script execution
+logs/
+
+# Temporary files
+*.tmp
+*.bak
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
