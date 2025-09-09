@@ -27,7 +27,24 @@
 /ip firewall address-list add list=allowed-sites address=coursera.org comment="Coursera"
 /ip firewall address-list add list=allowed-sites address=edx.org comment="edX"
 
-# Clear existing filter rules (be careful - this removes all rules!)
+# ==========================================
+# CRITICAL: DESTRUCTIVE OPERATION WARNING
+# ==========================================
+# The commented line below will REMOVE ALL EXISTING FIREWALL FILTER RULES!
+# 
+# ⚠️  BACKUP INSTRUCTIONS (REQUIRED before uncommenting):
+# 1. Create configuration backup: /export compact file=backup-before-filter-reset
+# 2. Save backup file to external storage  
+# 3. Test this configuration in a lab environment first
+# 4. Verify you have alternative router access (console/physical)
+# 
+# ⚠️  RISK ASSESSMENT:
+# - Will delete ALL current firewall filter rules
+# - May disconnect all network traffic immediately
+# - Could lock you out of router permanently
+# - Recovery requires physical access if misconfigured
+#
+# Only uncomment if you understand and accept these risks:
 # /ip firewall filter remove [find]
 
 # Allow established and related connections

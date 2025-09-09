@@ -50,7 +50,9 @@
 # =======================
 :log info "Step 4: Creating address lists for allowed sites..."
 
-# Remove existing address lists
+# ⚠️  DESTRUCTIVE OPERATION: Removing existing address lists  
+# BACKUP RECOMMENDED: /export compact file=backup-before-address-lists
+# This will remove all entries from 'allowed-local' and 'allowed-sites' lists
 /ip firewall address-list remove [find list=allowed-local]
 /ip firewall address-list remove [find list=allowed-sites]
 
@@ -76,7 +78,9 @@
 # =======================
 :log info "Step 5: Configuring DNS interception..."
 
-# Remove existing DNS NAT rules
+# ⚠️  DESTRUCTIVE OPERATION: Removing existing DNS NAT rules
+# BACKUP RECOMMENDED: /export compact file=backup-before-dns-changes
+# This operation removes NAT rules containing "Intercept DNS" in comments
 /ip firewall nat remove [find comment~"Intercept DNS"]
 
 # Intercept all DNS queries
@@ -88,8 +92,24 @@
 # =======================
 :log info "Step 6: Configuring firewall rules..."
 
-# WARNING: This will remove existing firewall rules!
-# Comment out the next line if you want to keep existing rules
+# ==========================================
+# CRITICAL: DESTRUCTIVE OPERATION WARNING
+# ==========================================
+# The commented line below will REMOVE ALL EXISTING FIREWALL RULES!
+# 
+# ⚠️  BACKUP INSTRUCTIONS (REQUIRED before uncommenting):
+# 1. Create configuration backup: /export compact file=backup-before-firewall-reset
+# 2. Save backup file to external storage
+# 3. Test this configuration in a lab environment first
+# 4. Verify you have alternative router access (console/physical)
+# 
+# ⚠️  RISK ASSESSMENT:
+# - Will delete ALL current firewall filter rules
+# - May disconnect all network traffic temporarily
+# - Could lock you out of router if not properly configured
+# - Recovery requires physical access to router if misconfigured
+#
+# Only uncomment the following line if you understand and accept these risks:
 # /ip firewall filter remove [find]
 
 # Layer 7 protocol for DoH domains
