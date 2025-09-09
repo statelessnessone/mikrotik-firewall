@@ -366,7 +366,7 @@ EOF
 # CONFIGURATION COMPLETE
 # =======================
 :log info "=== Safe Cycling Network Configuration Complete ==="
-:log info "DNS servers configured: ${DNS_SERVERS}"
+:log info "DNS servers configured: ${dns_servers}"
 :log info "Default deny firewall policy is active"
 :log info "Only approved websites are accessible"
 :log warning "VPN configuration requires manual setup"
