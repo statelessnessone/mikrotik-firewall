@@ -17,12 +17,21 @@ validate_mikrotik_script() {
     
     # Check for destructive operations
     echo "Checking for destructive operations..."
-    local destructive_patterns=("remove \[find\]" "reset-configuration" "system reset" "/system backup" "filter remove" "nat remove" "address-list remove")
+    # Use only regex patterns for destructive operations
+    local destructive_patterns=(
+        'remove[[:space:]]+\[find\]'
+        'reset-configuration'
+        'system[[:space:]]+reset'
+        '/?system[[:space:]]+backup'
+        '(/ip[[:space:]]+firewall[[:space:]]+)?filter[[:space:]]+remove'
+        '(/ip[[:space:]]+firewall[[:space:]]+)?nat[[:space:]]+remove'
+        '(/ip[[:space:]]+firewall[[:space:]]+)?address-list[[:space:]]+remove'
+    )
     
     for pattern in "${destructive_patterns[@]}"; do
-        if grep -q "$pattern" "$script_file"; then
+        if grep -Eq "$pattern" "$script_file"; then
             # Check for both active and commented destructive operations
-            local destructive_lines=$(grep -n "$pattern" "$script_file")
+            local destructive_lines=$(grep -En "$pattern" "$script_file")
             while IFS= read -r line; do
                 local line_num=$(echo "$line" | cut -d: -f1)
                 local line_content=$(echo "$line" | cut -d: -f2-)
