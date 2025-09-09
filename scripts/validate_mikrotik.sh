@@ -68,9 +68,9 @@ validate_mikrotik_script() {
                     [[ $context_start -lt 1 ]] && context_start=1
                     
                     if sed -n "${context_start},${context_end}p" "$script_file" | grep -qi "WARNING\|BACKUP\|CAUTION\|CRITICAL\|DESTRUCTIVE\|RISK"; then
-                        echo "✓ Commented destructive operation '$pattern' at line $line_num has proper warnings"
+                        log_both "✓ Commented destructive operation '$pattern' at line $line_num has proper warnings"
                     else
-                        echo "⚠ Commented destructive operation '$pattern' at line $line_num lacks adequate warnings"
+                        log_both "⚠ Commented destructive operation '$pattern' at line $line_num lacks adequate warnings"
                         ((warnings++))
                     fi
                 else
@@ -80,9 +80,9 @@ validate_mikrotik_script() {
                     [[ $context_start -lt 1 ]] && context_start=1
                     
                     if sed -n "${context_start},${context_end}p" "$script_file" | grep -qi "WARNING\|BACKUP\|CAUTION\|CRITICAL\|DESTRUCTIVE\|RISK"; then
-                        echo "✓ Active destructive operation '$pattern' at line $line_num has proper warnings"
+                        log_both "✓ Active destructive operation '$pattern' at line $line_num has proper warnings"
                     else
-                        echo "⚠ Active destructive operation '$pattern' at line $line_num lacks adequate warnings"
+                        log_both "⚠ Active destructive operation '$pattern' at line $line_num lacks adequate warnings"
                         ((warnings++))
                     fi
                 fi
@@ -110,24 +110,24 @@ validate_mikrotik_script() {
         
         # Check for valid RouterOS commands
         if [[ "$line" =~ ^[[:space:]]*/ ]]; then
-            echo "✓ Line $line_num: RouterOS command: $line"
+            log_both "✓ Line $line_num: RouterOS command: $line"
             in_continuation=false
         elif [[ "$line" =~ ^[[:space:]]*(add|set|print|enable|disable|do|local|if|foreach|while|export|import|put|delay) ]]; then
-            echo "✓ Line $line_num: Parameter/Script command: $line"
+            log_both "✓ Line $line_num: Parameter/Script command: $line"
             in_continuation=false
         elif [[ "$line" =~ ^[[:space:]]*: ]]; then
-            echo "✓ Line $line_num: Script command: $line"
+            log_both "✓ Line $line_num: Script command: $line"
             in_continuation=false
         elif [[ "$line" =~ ^[[:space:]]*\} ]]; then
-            echo "✓ Line $line_num: Script block end: $line"
+            log_both "✓ Line $line_num: Script block end: $line"
             in_continuation=false
         elif [[ "$in_continuation" == true ]]; then
-            echo "✓ Line $line_num: Continuation line: $line"
+            log_both "✓ Line $line_num: Continuation line: $line"
             if [[ ! "$line" =~ \\[[:space:]]*$ ]]; then
                 in_continuation=false
             fi
         else
-            echo "⚠ Line $line_num: Unknown line format: $line"
+            log_both "⚠ Line $line_num: Unknown line format: $line"
             ((errors++))
         fi
     done < "$script_file"
