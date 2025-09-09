@@ -1,3 +1,15 @@
-google.com
+# Allowed Sites Configuration
+# One domain per line (without http/https prefix)
+# These are the only websites that will be accessible
+# Educational and safe cycling websites
+en.wikipedia.org
+www.wikipedia.org
 github.com
 stackoverflow.com
+developer.mozilla.org
+w3schools.com
+codecademy.com
+khanacademy.org
+coursera.org
+edx.org
+google.com

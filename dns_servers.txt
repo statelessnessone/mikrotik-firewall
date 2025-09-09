@@ -1,3 +1,7 @@
+# DNS Servers Configuration
+# One DNS server per line
+# These will be used as the primary DNS servers for the router
 8.8.8.8
+8.8.4.4
 1.1.1.1
 9.9.9.9
