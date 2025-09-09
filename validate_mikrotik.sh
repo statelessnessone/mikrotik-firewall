@@ -7,6 +7,12 @@ validate_mikrotik_script() {
     local errors=0
     local warnings=0
     
+    # Context window sizes for destructive operation validation
+    declare -r COMMENTED_CONTEXT_BEFORE=10
+    declare -r COMMENTED_CONTEXT_AFTER=5
+    declare -r ACTIVE_CONTEXT_BEFORE=5
+    declare -r ACTIVE_CONTEXT_AFTER=2
+    
     if [[ ! -f "$script_file" ]]; then
         echo "Error: File $script_file not found"
         return 1
@@ -38,9 +44,9 @@ validate_mikrotik_script() {
                 
                 # Check if it's a commented line
                 if [[ "$line_content" =~ ^[[:space:]]*# ]]; then
-                    # Check for warnings in surrounding lines (5 before, 2 after)
-                    local context_start=$((line_num - 10))
-                    local context_end=$((line_num + 5))
+                    # Check for warnings in surrounding lines for commented operations
+                    local context_start=$((line_num - COMMENTED_CONTEXT_BEFORE))
+                    local context_end=$((line_num + COMMENTED_CONTEXT_AFTER))
                     [[ $context_start -lt 1 ]] && context_start=1
                     
                     if sed -n "${context_start},${context_end}p" "$script_file" | grep -qi "WARNING\|BACKUP\|CAUTION\|CRITICAL\|DESTRUCTIVE\|RISK"; then
@@ -51,8 +57,8 @@ validate_mikrotik_script() {
                     fi
                 else
                     # Active destructive operation - check for warnings
-                    local context_start=$((line_num - 5))
-                    local context_end=$((line_num + 2))
+                    local context_start=$((line_num - ACTIVE_CONTEXT_BEFORE))
+                    local context_end=$((line_num + ACTIVE_CONTEXT_AFTER))
                     [[ $context_start -lt 1 ]] && context_start=1
                     
                     if sed -n "${context_start},${context_end}p" "$script_file" | grep -qi "WARNING\|BACKUP\|CAUTION\|CRITICAL\|DESTRUCTIVE\|RISK"; then
