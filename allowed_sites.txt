@@ -12,3 +12,6 @@ codecademy.com
 khanacademy.org
 coursera.org
 edx.org
+google.com
+github.com
+stackoverflow.com
