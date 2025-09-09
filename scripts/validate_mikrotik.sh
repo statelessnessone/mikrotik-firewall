@@ -2,6 +2,24 @@
 # MikroTik RouterOS Script Validation Tool
 # Validates RouterOS script syntax and checks for destructive operations
 
+# Configuration
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+LOGS_DIR="${PROJECT_ROOT}/logs"
+
+# Create logs directory if it doesn't exist
+mkdir -p "${LOGS_DIR}"
+
+# Log file with timestamp
+LOG_FILE="${LOGS_DIR}/validate_mikrotik_$(date '+%Y%m%d_%H%M%S').log"
+
+# Function to log both to console and file
+log_both() {
+    local message="$1"
+    echo "$message"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $message" >> "$LOG_FILE"
+}
+
 validate_mikrotik_script() {
     local script_file="$1"
     local errors=0
@@ -14,15 +32,15 @@ validate_mikrotik_script() {
     declare -r ACTIVE_CONTEXT_AFTER=2
     
     if [[ ! -f "$script_file" ]]; then
-        echo "Error: File $script_file not found"
+        log_both "Error: File $script_file not found"
         return 1
     fi
     
-    echo "Validating MikroTik script: $script_file"
-    echo "=========================================="
+    log_both "Validating MikroTik script: $script_file"
+    log_both "=========================================="
     
     # Check for destructive operations
-    echo "Checking for destructive operations..."
+    log_both "Checking for destructive operations..."
     # Use only regex patterns for destructive operations
     local destructive_patterns=(
         'remove[[:space:]]+\[find\]'
@@ -73,8 +91,8 @@ validate_mikrotik_script() {
     done
     
     # Validate script syntax
-    echo ""
-    echo "Validating script syntax..."
+    log_both ""
+    log_both "Validating script syntax..."
     local line_num=0
     local in_continuation=false
     
@@ -114,20 +132,20 @@ validate_mikrotik_script() {
         fi
     done < "$script_file"
     
-    echo ""
-    echo "=========================================="
-    echo "Validation complete."
-    echo "Errors: $errors"
-    echo "Warnings: $warnings"
+    log_both ""
+    log_both "=========================================="
+    log_both "Validation complete."
+    log_both "Errors: $errors"
+    log_both "Warnings: $warnings"
     
     if [[ $errors -gt 0 ]]; then
-        echo "❌ Validation failed with $errors errors"
+        log_both "❌ Validation failed with $errors errors"
         return 1
     elif [[ $warnings -gt 0 ]]; then
-        echo "⚠️  Validation passed with $warnings warnings"
+        log_both "⚠️  Validation passed with $warnings warnings"
         return 0
     else
-        echo "✅ Validation passed successfully"
+        log_both "✅ Validation passed successfully"
         return 0
     fi
 }

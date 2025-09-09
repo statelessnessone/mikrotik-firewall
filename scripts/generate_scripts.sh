@@ -20,13 +20,24 @@ set -eu
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DNS_SERVERS_FILE="${SCRIPT_DIR}/dns_servers.txt"
-ALLOWED_SITES_FILE="${SCRIPT_DIR}/allowed_sites.txt"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+DNS_SERVERS_FILE="${PROJECT_ROOT}/dns_servers.txt"
+ALLOWED_SITES_FILE="${PROJECT_ROOT}/allowed_sites.txt"
+
+# Output directories
+OUTPUT_DIR="${PROJECT_ROOT}/output"
+LOGS_DIR="${PROJECT_ROOT}/logs"
+
+# Create directories if they don't exist
+mkdir -p "${OUTPUT_DIR}" "${LOGS_DIR}"
 
 # Output files
-DNS_CONFIG_OUTPUT="${SCRIPT_DIR}/01-configure-dns.rsc"
-FILTERING_CONFIG_OUTPUT="${SCRIPT_DIR}/04-website-filtering.rsc"
-MAIN_CONFIG_OUTPUT="${SCRIPT_DIR}/00-main-config.rsc"
+DNS_CONFIG_OUTPUT="${OUTPUT_DIR}/01-configure-dns.rsc"
+FILTERING_CONFIG_OUTPUT="${OUTPUT_DIR}/04-website-filtering.rsc"
+MAIN_CONFIG_OUTPUT="${OUTPUT_DIR}/00-main-config.rsc"
+
+# Log file with timestamp
+LOG_FILE="${LOGS_DIR}/generate_scripts_$(date '+%Y%m%d_%H%M%S').log"
 
 # Colors for output
 RED='\033[0;31m'
@@ -36,15 +47,21 @@ NC='\033[0m' # No Color
 
 # Logging functions
 log_info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
+    local message="$1"
+    echo -e "${GREEN}[INFO]${NC} $message"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] $message" >> "$LOG_FILE"
 }
 
 log_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
+    local message="$1"
+    echo -e "${YELLOW}[WARN]${NC} $message"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [WARN] $message" >> "$LOG_FILE"
 }
 
 log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+    local message="$1"
+    echo -e "${RED}[ERROR]${NC} $message"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] $message" >> "$LOG_FILE"
 }
 
 # Function to validate input files
