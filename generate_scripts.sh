@@ -150,7 +150,7 @@ generate_filtering_config() {
         site_count=0
         while IFS= read -r line || [[ -n "$line" ]]; do
             # Skip comments and empty lines
-            if [[ ! "$line" =~ ^[[:space:]]*# ]] && [[ -n "$(echo "$line" | tr -d '[:space:]')" ]]; then
+            if [[ ! "$line" =~ ^[[:space:]]*# ]] && [[ -n "${line//[[:space:]]/}" ]]; then
                 site=$(echo "$line" | tr -d '[:space:]')
                 echo "/ip firewall address-list add list=allowed-sites address=$site comment=\"Allowed site\"" >> "$FILTERING_CONFIG_OUTPUT"
                 site_count=$((site_count + 1))
